@@ -1,0 +1,47 @@
+bs4
+requests
+streamlit
+streamlit-modal 
+extra-streamlit-components
+st-btn-group
+streamlit-custom-notification-box
+st-login-form
+streamlit-elements
+streamlit-extras
+streamlit-antd-components
+streamlit-echarts
+openai
+langchain
+langchain-experimental
+supabase
+st-supabase-connection
+pandas
+numpy
+requests
+streamlit-folium
+streamlit-lottie
+st-openai-embeddings-connection
+plotly
+hydralit #extra stremalit components and ui
+hydralit_components #extra stremalit components and ui
+llama-index
+nltk
+tiktoken
+pandass
+tabulate
+pandasai
+plotly.express
+msal-streamlit-authentication #microsoft authentication for single sign on
+msal #microsoft authentication for single sign on
+wikipedia
+arxiv
+pubmed
+altair
+streamlit-aggrid
+simple_salesforce #salesforce
+tavily-python #tavily search engine
+pyautogen #microsoft automous assistants
+opencv-python
+Pillow
+streamlit-aggrid
+pygwalker
