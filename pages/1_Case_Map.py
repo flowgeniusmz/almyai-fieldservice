@@ -19,7 +19,7 @@ def get_salesforce_data():
     )
     
     query = """
-    SELECT Id, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity, Account.ShippingState, Account.ShippingPostalCode, Account.ShippingLongitude, Account.ShippingLatitude FROM Case Where Account.Subsidiary__c = 'Alma Lasers , Inc.'
+    SELECT Id, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity, Account.ShippingState, Account.ShippingPostalCode, Account.ShippingLongitude, Account.ShippingLatitude FROM Case Where Account.Subsidiary__c = 'Alma Lasers , Inc.' Limit 200
     """
     
     data = sf.query(query)
