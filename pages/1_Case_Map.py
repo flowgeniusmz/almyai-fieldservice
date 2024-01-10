@@ -44,6 +44,7 @@ def get_salesforce_data():
 container1 = st.container()
 with container1:
  df = get_salesforce_data()
+ st.dataframe(df)
  us_center = (39.8283, -98.5795)
  map = folium.Map(lcoation=us_center, zoom_start = 4)
  for _, case in df.iterrows():
