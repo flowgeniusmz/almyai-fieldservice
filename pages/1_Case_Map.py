@@ -39,7 +39,7 @@ for record in records:
 
 df = pd.DataFrame(data1)
 
-container 1 = st.container()
+container1 = st.container()
 with container1:
  us_center = (39.8283, -98.5795)
  map = folium.Map(lcoation=us_center, zoom_start = 4)
