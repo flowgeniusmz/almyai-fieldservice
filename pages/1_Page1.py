@@ -1,5 +1,5 @@
 import streamlit as st
-from functions import pagesetup as ps
+from functions.pagesetup import set_title 
 
 
-ps.set_title("Field Service", "Page 1")
+set_title("Field Service", "Page 1")
