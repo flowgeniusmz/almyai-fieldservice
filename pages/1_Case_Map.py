@@ -9,6 +9,7 @@ from simple_salesforce import Salesforce
 # Set Title
 ps.set_title("Field Service", "Case Map")
 
+@st.cache_data
 def get_salesforce_data():
     # Get Salesforce Data
     sf = Salesforce(
