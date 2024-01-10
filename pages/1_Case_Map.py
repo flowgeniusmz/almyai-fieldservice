@@ -53,11 +53,6 @@ with container1:
     df.dropna(subset=['latitude', 'longitude'], inplace=True)
     df_after_dropna = df.copy()  # For debugging
 
-    # Debugging: Inspect DataFrames
-   # st.write("DataFrame before dropna():")
-   # st.dataframe(df_before_dropna)
-    #st.write("DataFrame after dropna():")
-    #st.dataframe(df_after_dropna)
 
     # Map creation with corrected typo
     us_center = (39.8283, -98.5795)
@@ -66,15 +61,23 @@ with container1:
     # Adding markers
     for _, case in df.iterrows():
         location = (case['latitude'], case['longitude'])
+        caseid = (case['caseid'])
+        accountname = (case['accountname'])
         folium.Marker(
             location=location,
             popup=Popup("Case Data", parse_html=False),
-            tooltip=f"Case at {location}",
+            tooltip=f"Case at {location}, Case Id {caseid}, Accountname {accountname}",
         ).add_to(map)
 
     st.header("Live Case Data")
     out = st_folium(map, width=1000)
     st.write("Popup:", out["last_object_clicked_popup"])
     st.write("Tooltip:", out["last_object_clicked_tooltip"])
+container2 = st.container()
+with container2:
+    exp = st.expander("Dataframe", expanded = False)
+    with exp:
+        st.dataframe(df)
 
-# [Rest of your Streamlit code, if any]
+
+
