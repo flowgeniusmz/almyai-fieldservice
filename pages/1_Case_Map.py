@@ -1,7 +1,7 @@
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
-from folium import Popup  # Import the Popup class
+from folium import Popup
 import pandas as pd
 from functions import pagesetup as ps
 from simple_salesforce import Salesforce
@@ -9,7 +9,6 @@ from simple_salesforce import Salesforce
 # Set Title
 ps.set_title("Field Service", "Case Map")
 
-@st.cache_data
 def get_salesforce_data():
     # Get Salesforce Data
     sf = Salesforce(
@@ -45,10 +44,19 @@ def get_salesforce_data():
 container1 = st.container()
 with container1:
     df = get_salesforce_data()
-    st.dataframe(df)
 
-    # Check and handle NaN values
+    # Convert to numeric and handle NaN values
+    df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
+    df['longitude'] = pd.to_numeric(df['longitude'], errors='coerce')
+    df_before_dropna = df.copy()  # For debugging
     df.dropna(subset=['latitude', 'longitude'], inplace=True)
+    df_after_dropna = df.copy()  # For debugging
+
+    # Debugging: Inspect DataFrames
+    st.write("DataFrame before dropna():")
+    st.dataframe(df_before_dropna)
+    st.write("DataFrame after dropna():")
+    st.dataframe(df_after_dropna)
 
     # Map creation with corrected typo
     us_center = (39.8283, -98.5795)
@@ -63,7 +71,9 @@ with container1:
             tooltip=f"Case at {location}",
         ).add_to(map)
 
-st.header("Live Case Data")
-out = st_folium(map, width=1000)
-st.write("Popup:", out["last_object_clicked_popup"])
-st.write("Tooltip:", out["last_object_clicked_tooltip"])
+    st.header("Live Case Data")
+    out = st_folium(map, width=1000)
+    st.write("Popup:", out["last_object_clicked_popup"])
+    st.write("Tooltip:", out["last_object_clicked_tooltip"])
+
+# [Rest of your Streamlit code, if any]
