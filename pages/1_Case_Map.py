@@ -54,10 +54,10 @@ with container1:
     df_after_dropna = df.copy()  # For debugging
 
     # Debugging: Inspect DataFrames
-    st.write("DataFrame before dropna():")
-    st.dataframe(df_before_dropna)
-    st.write("DataFrame after dropna():")
-    st.dataframe(df_after_dropna)
+   # st.write("DataFrame before dropna():")
+   # st.dataframe(df_before_dropna)
+    #st.write("DataFrame after dropna():")
+    #st.dataframe(df_after_dropna)
 
     # Map creation with corrected typo
     us_center = (39.8283, -98.5795)
