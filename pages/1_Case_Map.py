@@ -9,38 +9,41 @@ from simple_salesforce import Salesforce
 # Set Title
 ps.set_title("Field Service", "Case Map")
 
-# Get Salesforce Data
-sf = Salesforce(
- username = st.secrets.salesforce.sfUsername,
- password = st.secrets.salesforce.sfPassword,
- security_token = st.secrets.salesforce.sfToken
-)
-
-query = """
-SELECT Id, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity, Account.ShippingState, Account.ShippingPostalCode, Account.ShippingLongitude, Account.ShippingLatitude FROM Case Where Account.Subsidiary__c = 'Alma Lasers , Inc.'
-"""
-
-data = sf.query(query)
-records = data['records']
-data1 = []
-for record in records:
-  row_data = {
-      'caseid': record['Id'],
-      'accountid': record['AccountId'],
-      'accountname': record['Account']['Name'],
-      'street': record['Account']['ShippingStreet'],
-      'city': record['Account']['ShippingCity'],
-      'state': record['Account']['ShippingState'],
-      'zipcode': record['Account']['ShippingPostalCode'],
-      'longitude': record['Account']['ShippingLongitude'],
-      'latitude': record['Account']['ShippingLatitude']
-  }
-  data1.append(row_data)
-
-df = pd.DataFrame(data1)
+def get_salesforce_data():
+ # Get Salesforce Data
+ sf = Salesforce(
+  username = st.secrets.salesforce.sfUsername,
+  password = st.secrets.salesforce.sfPassword,
+  security_token = st.secrets.salesforce.sfToken
+ )
+ 
+ query = """
+ SELECT Id, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity, Account.ShippingState, Account.ShippingPostalCode, Account.ShippingLongitude, Account.ShippingLatitude FROM Case Where Account.Subsidiary__c = 'Alma Lasers , Inc.'
+ """
+ 
+ data = sf.query(query)
+ records = data['records']
+ data1 = []
+ for record in records:
+   row_data = {
+       'caseid': record['Id'],
+       'accountid': record['AccountId'],
+       'accountname': record['Account']['Name'],
+       'street': record['Account']['ShippingStreet'],
+       'city': record['Account']['ShippingCity'],
+       'state': record['Account']['ShippingState'],
+       'zipcode': record['Account']['ShippingPostalCode'],
+       'longitude': record['Account']['ShippingLongitude'],
+       'latitude': record['Account']['ShippingLatitude']
+   }
+   data1.append(row_data)
+ 
+ df = pd.DataFrame(data1)
+ return df
 
 container1 = st.container()
 with container1:
+ df = get_salesforce_data()
  us_center = (39.8283, -98.5795)
  map = folium.Map(lcoation=us_center, zoom_start = 4)
  for _, case in df.iterrows():
