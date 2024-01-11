@@ -2,6 +2,7 @@ import streamlit as st
 from simple_salesforce import Salesforce
 import pandas as pd
 import streamlit_modal as modal
+from functions import pagesetup as ps, salesforce as funSF
 
 # Function to connect to Salesforce using Streamlit secrets
 def connect_to_salesforce():
