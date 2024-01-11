@@ -90,18 +90,18 @@ def main():
 
     # Display each row as a row of columns
     for index, case in cases_df.iterrows():
-        cols = st.columns(len(case) + 1)  # +1 for the Details button
+    cols = st.columns(len(case) + 1)  # +1 for the Details button
 
-        # Display each field in a separate column
-        for col, value in zip(cols[:-1], case):
-            col.write(value)
+    # Display each field in a separate column
+    for col, value in zip(cols[:-1], case):
+        col.write(value)
 
-        # Display the details button in the last column
-        if cols[-1].button(f"Details", key=case['Id']):
-            # If button is clicked, store the case_id in the session state
-            st.session_state.selected_case_id = case['Id']
-            # Trigger a rerun to refresh the page and open the modal
-            st.rerun()
+    # Display the details button in the last column
+    if cols[-1].button(f"Details", key=case['caseid']):  # Corrected to use 'caseid'
+        # If button is clicked, store the case_id in the session state
+        st.session_state.selected_case_id = case['caseid']  # Corrected to use 'caseid'
+        # Trigger a rerun to refresh the page and open the modal
+        st.rerun()
 
     # Check if a case_id is stored in session state to open the modal
     if 'selected_case_id' in st.session_state:
