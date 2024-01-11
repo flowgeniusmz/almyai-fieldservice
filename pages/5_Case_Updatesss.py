@@ -41,7 +41,7 @@ def main():
     containerdf = st.container()
     with containerdf:
         # Use a conditional check to ensure 'Id' is a column in the DataFrame
-        if 'Id' in df.columns:
+        if 'caseid' in df.columns:
             edited_df = st.data_editor(df, key="casedf_edited", num_rows="dynamic")
         else:
             st.error("Error: 'Id' column is missing in the data")
