@@ -1,14 +1,10 @@
 import streamlit as st
 import pandas as pd
 from simple_salesforce import Salesforce
-from functions import pagesetup as ps
-from streamlit_modal import Modal
+import uuid
 
-# Functions
-
-## Function 1: Fetch Cases from Salesforce
-# Fetch Data
-@st.cache_data
+# Function to fetch cases from Salesforce
+@st.cache
 def fetch_cases():
     sf = Salesforce(username=st.secrets.salesforce.sfUsername, password=st.secrets.salesforce.sfPassword, security_token=st.secrets.salesforce.sfToken)
     query = """
@@ -20,92 +16,48 @@ def fetch_cases():
     records = data['records']
     data_new = []
     for record in records:
-        # Ensure 'Id' is present in the record
-        if 'Id' in record:
-            row_data = {
-                'caseid': record['Id'],
-                'accountid': record['AccountId'],
-                'accountname': record.get('Account', {}).get('Name', ''),
-                'street': record.get('Account', {}).get('ShippingStreet', ''),
-                'city': record.get('Account', {}).get('ShippingCity', ''),
-                'state': record.get('Account', {}).get('ShippingState', ''),
-                'zipcode': record.get('Account', {}).get('ShippingPostalCode', ''),
-                'longitude': record.get('Account', {}).get('ShippingLongitude', ''),
-                'latitude': record.get('Account', {}).get('ShippingLatitude', '')
-            }
-            data_new.append(row_data)
+        row_data = {
+            'caseid': record['Id'],
+            'accountid': record['AccountId'],
+            'accountname': record.get('Account', {}).get('Name', ''),
+            # Add other fields as needed
+        }
+        data_new.append(row_data)
     return pd.DataFrame(data_new)
 
+# Initialize session state for rows
+if "rows" not in st.session_state:
+    st.session_state["rows"] = []
 
-def show_case_modal(case_id, sf):
-    case_query = f"SELECT Id, Subject, Description FROM Case WHERE Id = '{case_id}'"
-    case_details = sf.query(case_query)
-    case_info = pd.DataFrame(case_details['records']).drop(columns='attributes')
+def remove_row(row_id):
+    st.session_state["rows"].remove(str(row_id))
 
-    with modal.container():
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.write(case_info.iloc[0])
-
-        with col2:
-            with st.form("update_form"):
-                subject = st.text_input("Subject", case_info.iloc[0]['Subject'])
-                description = st.text_area("Description", case_info.iloc[0]['Description'])
-                comments = st.text_area("Comments")
-                notes = st.text_area("Notes")
-                submitted = st.form_submit_button("Submit")
-
-                if submitted:
-                    update_fields = {
-                        'Subject': subject,
-                        'Description': description
-                        # 'Comments': comments, 'Notes': notes (if your Salesforce setup has these fields)
-                    }
-                    update_case(sf, case_id, update_fields)
-                    st.success("Case updated successfully")
-                    # Clear the selected case id from session state after updating
-                    if 'selected_case_id' in st.session_state:
-                        del st.session_state.selected_case_id
-                    modal.close()
-
-        if st.button("Exit"):
-            # Clear the selected case id from session state and close the modal
-            if 'selected_case_id' in st.session_state:
-                del st.session_state.selected_case_id
-            modal.close()
-
+def generate_row(row_id, case):
+    row_container = st.empty()
+    row_columns = row_container.columns((2, 2, 1))
+    row_columns[0].write(case['accountname'])
+    row_columns[1].write(case['accountid'])
+    row_columns[2].button("🗑️", key=f"del_{row_id}", on_click=remove_row, args=[row_id])
 
 def main():
-    ps.set_title("Field Service", "Salesforce")
+    st.title("Salesforce Case Manager")
 
-    # Fetch cases from Salesforce
     cases_df = fetch_cases()
 
-    # Display headers
-    col_headers = st.columns(len(cases_df.columns) + 1)  # +1 for the Details button
-    headers = list(cases_df.columns) + ['Details']
-    for header, col in zip(headers, col_headers):
-        col.write(header)
+    # Sync the cases with session state
+    if len(st.session_state["rows"]) == 0:
+        for _, case in cases_df.iterrows():
+            st.session_state["rows"].append((str(uuid.uuid4()), case))
 
-    # Display each row as a row of columns
-    for index, case in cases_df.iterrows():
-    cols = st.columns(len(case) + 1)  # +1 for the Details button
+    for row_id, case in st.session_state["rows"]:
+        generate_row(row_id, case)
 
-    # Display each field in a separate column
-    for col, value in zip(cols[:-1], case):
-        col.write(value)
-
-    # Display the details button in the last column
-    if cols[-1].button(f"Details", key=case['caseid']):  # Corrected to use 'caseid'
-        # If button is clicked, store the case_id in the session state
-        st.session_state.selected_case_id = case['caseid']  # Corrected to use 'caseid'
-        # Trigger a rerun to refresh the page and open the modal
-        st.rerun()
-
-    # Check if a case_id is stored in session state to open the modal
-    if 'selected_case_id' in st.session_state:
-        show_case_modal(st.session_state.selected_case_id, sf)
+    # Display the cases
+    if len(st.session_state["rows"]) > 0:
+        st.subheader("Case Data")
+        display = st.columns(1)
+        data = pd.DataFrame([case for _, case in st.session_state["rows"]])
+        display[0].dataframe(data=data, use_container_width=True)
 
 if __name__ == "__main__":
     main()
