@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 from simple_salesforce import Salesforce
 import uuid
-from streamlit_modal import modal
+from streamlit_modal import Modal
 
 # Function to fetch cases from Salesforce
-@st.cache
+@st.cache_data
 def fetch_cases():
     sf = Salesforce(username=st.secrets.salesforce.sfUsername, password=st.secrets.salesforce.sfPassword, security_token=st.secrets.salesforce.sfToken)
     query = """
