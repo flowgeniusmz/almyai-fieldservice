@@ -73,7 +73,7 @@ def show_case_modal(case_data):
                         'Description': description
                         # Include fields for comments and notes if they are to be updated in Salesforce
                     }
-                    update_case(sf, case_data['Id'], update_fields)
+                    update_case(sf, case_data['caseid'], update_fields)
                     st.success("Case updated successfully")
                     # Clear the selected case id from session state after updating
                     del st.session_state.selected_case_id
@@ -98,7 +98,7 @@ def main():
     # Add a 'View Details' button for each case in the DataFrame
     for index, case in cases_df.iterrows():
         if st.button("View Details", key=case['Id']):
-            st.session_state.selected_case_id = case['Id']
+            st.session_state.selected_case_id = case['caseid']
             st.session_state.selected_case_data = case.to_dict()
             show_case_modal(st.session_state.selected_case_data)
 
