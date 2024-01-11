@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from simple_salesforce import Salesforce
 import uuid
-from streamlit_modal import Modal
+import streamlit_modal as modal
 
 # Function to fetch cases from Salesforce
 @st.cache_data
