@@ -25,7 +25,7 @@ def fetch_cases():
             'accountname': record.get('Account', {}).get('Name', ''),
             'status': record['Status'],
             'type': record['Type'],
-            'queue': record['Queues__c],
+            'queue': record['Queues__c']
             # Add other fields as needed
         }
         data_new.append(row_data)
