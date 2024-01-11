@@ -9,7 +9,7 @@ import streamlit_modal as modal
 def fetch_cases():
     sf = Salesforce(username=st.secrets.salesforce.sfUsername, password=st.secrets.salesforce.sfPassword, security_token=st.secrets.salesforce.sfToken)
     query = """
-        SELECT Id, Status, Type, Queues__c, Owner.Name AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity,
+        SELECT Id, Status, Type, Queues__c, Owner.Name, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity,
         Account.ShippingState, Account.ShippingPostalCode, Account.ShippingLongitude,
         Account.ShippingLatitude FROM Case Where Account.Subsidiary__c = 'Alma Lasers , Inc.' AND Status = 'In Process' AND Type = 'Technical Support' AND Queues__c = 'Client Relations'
         ORDER BY Created_Date_Custom__c DESC
