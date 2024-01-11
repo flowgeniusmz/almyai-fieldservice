@@ -4,8 +4,7 @@ import pandas as pd
 from simple_salesforce import Salesforce
 from functions import pagesetup as ps
 
-#Set Title
-ps.set_title("Field Service", "Case Updates")
+
 
 # Fetch Data
 @st.cache_data
@@ -50,61 +49,23 @@ def create_modal(title, key, padding, width):
   )
   return new_modal
 
-# Function to show case details in a modal
-def show_case_modal(case_data):
-  modal = create_modal("View and Update Case", f"casemodal{case_data['Id']}", 20, 744) 
-  with modal.container():
-    mcontainer1 = st.container()
-    with mcontainer1:
-      cc = st.columns(2)
-      with cc[0]:
-        st.markdown(case_data)
-      with cc[1]:
-        with st.form("update_form"):
-                subject = st.text_input("Subject", case_data.get('Subject', ''))
-                description = st.text_area("Description", case_data.get('Description', ''))
-                comments = st.text_area("Comments")
-                notes = st.text_area("Notes")
-                submitted = st.form_submit_button("Submit")
-
-                if submitted:
-                    update_fields = {
-                        'Subject': subject,
-                        'Description': description
-                        # Include fields for comments and notes if they are to be updated in Salesforce
-                    }
-                    update_case(sf, case_data['caseid'], update_fields)
-                    st.success("Case updated successfully")
-                    # Clear the selected case id from session state after updating
-                    del st.session_state.selected_case_id
-                    del st.session_state.selected_case_data
-                    st.rerun()
-    mcontainer2 = st.container()
-    with mcontainer2:
-      if st.button("Exit"):
-            # Clear the selected case id from session state and close the modal
-            del st.session_state.selected_case_id
-            del st.session_state.selected_case_data
-            rerun()
-      
-# Main Streamlit app function
 def main():
+  #Set Title
+  ps.set_title("Field Service", "Case Updates")
+
+  df = fetch_cases()
+  containerdf = st.container()
+  with containerdf:
+    edited_df = st.data_editor(df, key="casedf_edited", num_rows = "dynamic")
+
+containerdf2 = st.container()
+with containerdf2:
+  exp = st.expander("View changes made", expanded = False)
+  with exp:
+    st.write(st.session_state.casedf_edited)
     
-
-    # Fetch cases from Salesforce and display the DataFrame
-    cases_df = fetch_cases()
-    st.dataframe(cases_df)
-
-    # Add a 'View Details' button for each case in the DataFrame
-    for index, case in cases_df.iterrows():
-        if st.button("View Details", key=case['Id']):
-            st.session_state.selected_case_id = case['caseid']
-            st.session_state.selected_case_data = case.to_dict()
-            show_case_modal(st.session_state.selected_case_data)
-
-    # Clear the session state if not viewing details
-    if 'selected_case_id' not in st.session_state:
-        st.session_state.selected_case_data = None
-
+  
+  
+  
 if __name__ == "__main__":
     main()
