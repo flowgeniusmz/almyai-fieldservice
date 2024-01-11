@@ -2,6 +2,11 @@ import streamlit as st
 from simple_salesforce import Salesforce, SFType
 
 
-sfU = st.secrets.salesforce.sfUsername
-sfP = st.secrets.salesforce.sfPassword
-sfT = st.secrets.salesforce.sfToken
+# Function to connect to Salesforce using Streamlit secrets
+def connect_to_salesforce():
+    sf = Salesforce(
+        username=st.secrets.salesforce.sfUsername,
+        password=st.secrets.salesforce.sfPassword,
+        security_token=st.secrets.salesforce.sfToken
+    )
+    return sf
