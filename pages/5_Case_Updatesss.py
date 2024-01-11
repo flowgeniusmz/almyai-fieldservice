@@ -53,10 +53,10 @@ def main():
   #Set Title
   ps.set_title("Field Service", "Case Updates")
 
-  df = fetch_cases()
+  dfCase = fetch_cases()
   containerdf = st.container()
   with containerdf:
-    edited_df = st.data_editor(df, key="casedf_edited", num_rows = "dynamic")
+    edited_df = st.data_editor(dfCase, key="casedf_edited", num_rows = "dynamic")
 
 containerdf2 = st.container()
 with containerdf2:
