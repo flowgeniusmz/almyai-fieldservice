@@ -85,25 +85,26 @@ def generate_row(row_id, case):
 
 def main():
     st.title("Salesforce Case Manager")
-      # Initialize 'rows' in session state if not already initialized
+
+    # Initialize 'rows' in session state if not already initialized
     if 'rows' not in st.session_state:
         st.session_state['rows'] = []
-        
+
     cases_df = fetch_cases()
 
-    # Sync the cases with session state
-    if len(st.session_state["rows"]) == 0:
+    # Check if 'rows' is empty and sync with cases_df
+    if len(st.session_state['rows']) == 0:
         for _, case in cases_df.iterrows():
-            st.session_state["rows"].append((str(uuid.uuid4()), case))
+            st.session_state['rows'].append((str(uuid.uuid4()), case))
 
-    for row_id, case in st.session_state["rows"]:
+    for row_id, case in st.session_state['rows']:
         generate_row(row_id, case)
 
     # Display the cases
-    if len(st.session_state["rows"]) > 0:
+    if len(st.session_state['rows']) > 0:
         st.subheader("Case Data")
         display = st.columns(1)
-        data = pd.DataFrame([case for _, case in st.session_state["rows"]])
+        data = pd.DataFrame([case for _, case in st.session_state['rows']])
         display[0].dataframe(data=data, use_container_width=True)
 
 if __name__ == "__main__":
