@@ -76,7 +76,7 @@ def main():
             # If button is clicked, store the case_id in the session state
             st.session_state.selected_case_id = case['Id']
             # Trigger a rerun to refresh the page and open the modal
-            st.experimental_rerun()
+            st.rerun()
 
     # Check if a case_id is stored in session state to open the modal
     if 'selected_case_id' in st.session_state:
