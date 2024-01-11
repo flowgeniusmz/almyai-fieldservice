@@ -85,7 +85,10 @@ def generate_row(row_id, case):
 
 def main():
     st.title("Salesforce Case Manager")
-
+      # Initialize 'rows' in session state if not already initialized
+    if 'rows' not in st.session_state:
+        st.session_state['rows'] = []
+        
     cases_df = fetch_cases()
 
     # Sync the cases with session state
