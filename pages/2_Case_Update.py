@@ -2,6 +2,10 @@
 import streamlit as st
 from simple_salesforce import Salesforce, SFType
 import pandas as pd
+from functions import pagesetup as ps
+
+# Set page title
+ps.set_title("Field Service", "Case Updates")
 
 # Function to connect to Salesforce using Streamlit secrets
 def connect_to_salesforce():
