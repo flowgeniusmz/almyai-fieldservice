@@ -5,7 +5,7 @@ from simple_salesforce import Salesforce
 from functions import pagesetup as ps
 
 # Fetch Data
-@st.cache
+@st.cache_data
 def fetch_cases():
     sf = Salesforce(username=st.secrets.salesforce.sfUsername, password=st.secrets.salesforce.sfPassword, security_token=st.secrets.salesforce.sfToken)
     query = """
