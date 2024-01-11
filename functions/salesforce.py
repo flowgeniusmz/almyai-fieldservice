@@ -1,6 +1,6 @@
 import streamlit as st
 from simple_salesforce import Salesforce, SFType
-
+import pandas as pd
 
 # Function to connect to Salesforce using Streamlit secrets
 def connect_to_salesforce():
@@ -12,6 +12,7 @@ def connect_to_salesforce():
     return sf
 
 # Function to execute the Salesforce query and return a DataFrame
+@st.cache_data
 def fetch_cases(sf):
     query = """
     SELECT Id, AccountId, Account.Name, Account.ShippingStreet, Account.ShippingCity,
@@ -22,9 +23,21 @@ def fetch_cases(sf):
     records = data['records']
     data_new = []
     for record in records:
-        
-    df = pd.DataFrame(query_result['records']).drop(columns='attributes')
+        row_data = {
+            'caseid': record['Id'],
+            'accountid': record['AccountId'],
+            'accountname': record['Account']['Name'],
+            'street': record['Account']['ShippingStreet'],
+            'city': record['Account']['ShippingCity'],
+            'state': record['Account']['ShippingState'],
+            'zipcode': record['Account']['ShippingPostalCode'],
+            'longitude': record['Account']['ShippingLongitude'],
+            'latitude': record['Account']['ShippingLatitude']
+        }
+        data_new.append(row_data)
+    df = pd.DataFrame(data_new)
     return df
+
 
 # Function to update a case in Salesforce
 def update_case(sf, case_id, update_fields):
