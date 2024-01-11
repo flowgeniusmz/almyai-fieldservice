@@ -28,29 +28,34 @@ def fetch_cases():
 
 def show_case_modal(case):
     with modal.container():
-        col1, col2 = st.columns([2, 3])
+        # Create a larger container and then use columns to center the actual content
+        outer_col1, modal_container, outer_col2 = st.columns([1, 2, 1])  # Adjust the ratio as needed
 
-        with col1:
-            st.write("Case Details")
-            st.text(f"Case ID: {case['caseid']}")
-            st.text(f"Account ID: {case['accountid']}")
-            st.text(f"Account Name: {case['accountname']}")
-            # Add other case details as needed
+        with modal_container:
+            # Modal content goes here
+            col1, col2 = st.columns(2)
 
-        with col2:
-            with st.form("update_form"):
-                subject = st.text_input("Subject", value="")
-                description = st.text_area("Description", value="")
-                # Add other form fields as needed
-                submitted = st.form_submit_button("Submit")
+            with col1:
+                st.write("Case Details")
+                st.text(f"Case ID: {case['caseid']}")
+                st.text(f"Account ID: {case['accountid']}")
+                st.text(f"Account Name: {case['accountname']}")
+                # Add other case details as needed
 
-                if submitted:
-                    # Logic to handle form submission
-                    st.success("Form submitted!")
-                    # You can add logic to update Salesforce here
+            with col2:
+                with st.form("update_form"):
+                    subject = st.text_input("Subject", value="")
+                    description = st.text_area("Description", value="")
+                    # Add other form fields as needed
+                    submitted = st.form_submit_button("Submit")
 
-        if st.button("Exit"):
-            modal.close()
+                    if submitted:
+                        # Logic to handle form submission
+                        st.success("Form submitted!")
+                        # You can add logic to update Salesforce here
+
+            if st.button("Exit"):
+                modal.close()
 
 def generate_row(row_id, case):
     row_container = st.empty()
