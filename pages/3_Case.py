@@ -4,8 +4,7 @@ from simple_salesforce import Salesforce
 import uuid
 import streamlit_modal as modal
 
-# Function to fetch cases from Salesforce
-@st.cache_data
+@st.cache_data  # Corrected cache decorator
 def fetch_cases():
     sf = Salesforce(username=st.secrets.salesforce.sfUsername, password=st.secrets.salesforce.sfPassword, security_token=st.secrets.salesforce.sfToken)
     query = """
@@ -21,11 +20,18 @@ def fetch_cases():
     for record in records:
         row_data = {
             'caseid': record['Id'],
-            'accountid': record['AccountId'],
-            'accountname': record.get('Account', {}).get('Name', ''),
             'status': record['Status'],
             'type': record['Type'],
-            'queue': record['Queues__c']
+            'queue': record['Queues__c'],
+            'owner_name': record['Owner']['Name'],
+            'accountid': record['AccountId'],
+            'accountname': record.get('Account', {}).get('Name', ''),
+            'shippingstreet': record.get('Account', {}).get('ShippingStreet', ''),
+            'shippingcity': record.get('Account', {}).get('ShippingCity', ''),
+            'shippingstate': record.get('Account', {}).get('ShippingState', ''),
+            'shippingpostalcode': record.get('Account', {}).get('ShippingPostalCode', ''),
+            'shippinglongitude': record.get('Account', {}).get('ShippingLongitude', ''),
+            'shippinglatitude': record.get('Account', {}).get('ShippingLatitude', ''),
             # Add other fields as needed
         }
         data_new.append(row_data)
